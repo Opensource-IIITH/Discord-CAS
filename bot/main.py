@@ -16,6 +16,8 @@ db = mongo_client.get_database("discord-cas")
 
 bot = commands.Bot(command_prefix=';')
 
+is_configured = False
+configured_role = None
 VERIFIED_ROLE_NAME = "cas-verified"
 
 
@@ -30,15 +32,20 @@ async def send_link(ctx):
 
 
 async def assign_role(ctx, user):
-    roles = ctx.guild.roles
-    role_names = [role.name for role in roles]
+    if not is_configured:
+        roles = ctx.guild.roles
+        role_names = [role.name for role in roles]
 
-    if VERIFIED_ROLE_NAME not in role_names:
-        await ctx.guild.create_role(name=VERIFIED_ROLE_NAME)
+        if VERIFIED_ROLE_NAME not in role_names:
+            await ctx.guild.create_role(name=VERIFIED_ROLE_NAME)
 
-    required_role = [role for role in roles if role.name == VERIFIED_ROLE_NAME]
+        required_role = [role for role in roles if role.name == VERIFIED_ROLE_NAME][0]
 
-    await user.add_roles(required_role[0])
+    else:
+        required_role = configured_role
+
+    await user.add_roles(required_role)
+    await ctx.send(f"<@{user.id}> has been CAS-verified.")
 
 
 @bot.command(name="verify")
@@ -51,6 +58,22 @@ async def verify_user(ctx):
         await ctx.send(f"Yayy verified")
     else:
         await send_link(ctx)
+
+
+@commands.has_permissions(administrator=True)
+@bot.command(name="configure")
+async def configure_verification_role(ctx, role: discord.Role):
+    global configured_role, is_configured
+    configured_role = role
+    is_configured = True
+    await ctx.send(f"Verified role set to {role.name}")    
+
+@configure_verification_role.error
+async def configure_error(ctx, error):
+    if isinstance(error, commands.MissingPermissions):
+        await ctx.send("You must be an admin to configure roles")
+    elif isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.RoleNotFound):
+        await ctx.send("Please specify a role.")
 
 
 @bot.event
