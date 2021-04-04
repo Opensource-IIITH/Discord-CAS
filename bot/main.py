@@ -21,8 +21,12 @@ VERIFIED_ROLE_NAME = "cas-verified"
 
 async def is_verified(user_id):
     users = list(db.users.find({"user_id": str(user_id)}))
-    print(users)
     return True if len(users) else False
+
+
+async def send_link(ctx):
+    LINK_TEXT = "*link*"
+    await ctx.send(f"{LINK_TEXT}\nSign in to CAS and try again.")
 
 
 async def assign_role(ctx, user):
@@ -46,7 +50,7 @@ async def verify_user(ctx):
         await assign_role(ctx, ctx.message.author)
         await ctx.send(f"Yayy verified")
     else:
-        await ctx.send(f"Ew not verified.")
+        await send_link(ctx)
 
 
 @bot.event
