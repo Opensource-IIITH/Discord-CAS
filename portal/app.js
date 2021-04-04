@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser')
 const morgan = require('morgan');
 const fetch = require('node-fetch');
 const btoa = require('btoa');
@@ -10,6 +11,7 @@ const app = express();
 
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
   res.redirect('/discord');
@@ -19,7 +21,8 @@ app.get('/discord', (req, res) => {
   res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${config.DISCORD_CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${config.DISCORD_REDIRECT}`);
 })
 
-app.get('/cas', async (req, res) => {
+app.get('/discord/callback', async (req, res) => {
+  /* Get user from discord */
   if (!req.query.code) {
     res.send("You are not discord :angry:", 400);
     return;
@@ -64,8 +67,51 @@ app.get('/cas', async (req, res) => {
   });
 
   const user = await userResponse.json();
-  logger.info(user);
-  res.json(user);
+
+  if (!user) {
+    res.send("Some error occured while communicating to discord :pensive:", 500);
+    return;
+  }
+
+  /* Set user id as cookie */
+  res.cookie("discordId", user.id);
+
+  res.redirect('/cas');
+})
+
+const CAS = require('cas')
+
+const cas = new CAS({
+  base_url: 'https://login.iiit.ac.in/cas',
+  service: config.BASE_URL,
+  version: 2.0,
+})
+
+app.get('/cas', async (req, res) => {
+  if (!req.cookies.discordId) {
+    /* Verify that discord we set this cookie not a malicious user */
+    res.send("You are not discord :angry:", 500);
+    return;
+  }
+
+  cas.authenticate(req, res, (err, status, username, extended) => {
+    if (err) {
+      res.send("Some error occured with the CAS server :pensive:", 500);
+    } else {
+      if (!status) {
+        /* TODO: Identify what status false means */
+        res.send("Status false?", 500);
+      }
+
+      const userData = {
+        "discordId": req.cookies.discordId,
+        "name": extended.attributes.name,
+        "rollno": extended.attributes.rollno,
+        "email": extended.attributes['e-mail'],
+      }
+      res.json(userData);
+    }
+  });
 })
 
 module.exports = app;
