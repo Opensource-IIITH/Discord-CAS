@@ -1,0 +1,19 @@
+{
+  "name": "portal",
+  "version": "1.0.0",
+  "description": "Portal to integrate CAS and Discord",
+  "main": "index.js",
+  "repository": "https://github.com/Groverkss/Discord-CAS",
+  "author": "Kunwar Shaanjeet Singh Grover",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.12.3",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.7"
+  },
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  }
+}
