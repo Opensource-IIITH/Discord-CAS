@@ -10,9 +10,11 @@ from pymongo import MongoClient
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
+MONGO_USER = os.getenv("MONGO_USER")
+MONGO_DATABASE= os.getenv("MONGO_DATABASE")
 
-mongo_client = MongoClient(f"mongodb+srv://dev:{MONGO_PASSWORD}@cluster0.ulzen.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-db = mongo_client.get_database("discord-cas")
+mongo_client = MongoClient(f"mongodb+srv://{MONGO_USER}:{MONGO_PASSWORD}@cluster0.lkxfy.mongodb.net/{MONGO_DATABASE}?retryWrites=true&w=majority")
+db = mongo_client.get_database(MONGO_DATABASE)
 
 bot = commands.Bot(command_prefix=';')
 
@@ -22,7 +24,7 @@ VERIFIED_ROLE_NAME = "cas-verified"
 
 
 async def is_verified(user_id):
-    users = list(db.users.find({"user_id": str(user_id)}))
+    users = list(db.users.find({"discordId": str(user_id)}))
     return True if len(users) else False
 
 
