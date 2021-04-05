@@ -7,6 +7,8 @@ const btoa = require('btoa');
 const config = require('./utils/config');
 const logger = require('./utils/logger');
 
+const User = require('./models/User')
+
 const app = express();
 
 app.use(express.json());
@@ -94,7 +96,7 @@ app.get('/cas', async (req, res) => {
     return;
   }
 
-  cas.authenticate(req, res, (err, status, username, extended) => {
+  await cas.authenticate(req, res, async (err, status, username, extended) => {
     if (err) {
       res.send("Some error occured with the CAS server :pensive:", 500);
     } else {
@@ -103,13 +105,18 @@ app.get('/cas', async (req, res) => {
         res.send("Status false?", 500);
       }
 
-      const userData = {
+      const user = await User.findOrCreate({ "discordId": req.cookies.discordId }, {
         "discordId": req.cookies.discordId,
-        "name": extended.attributes.name,
-        "rollno": extended.attributes.rollno,
-        "email": extended.attributes['e-mail'],
+        "name": extended.attributes.name[0],
+        "rollno": extended.attributes.rollno[0],
+        "email": extended.attributes['e-mail'][0],
+      });
+
+      if (user) {
+        res.send("Success! :smile:");
+      } else {
+        res.send("Some error occured :pensive:");
       }
-      res.json(userData);
     }
   });
 })

@@ -14,6 +14,7 @@
     "express-session": "^1.17.1",
     "jsdom": "^16.5.2",
     "mongoose": "^5.12.3",
+    "mongoose-findorcreate": "^3.0.0",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.7"
