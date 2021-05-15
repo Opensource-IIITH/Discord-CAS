@@ -18,9 +18,13 @@ app.use(session({
     secret: config.SECRET, store: MongoStore.create({mongoUrl: config.ATLAS_URL})
 }));
 
+app.get('/test', (req, res) => {
+    res.send("Hello World!");
+});
+
 app.get('/', (req, res) => {
     res.redirect('/discord');
-})
+});
 
 app.get('/discord', (req, res) => {
     res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${config.DISCORD_CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${config.DISCORD_REDIRECT}`);
@@ -119,7 +123,7 @@ app.get('/cas', async (req, res) => {
                 res.send("Some error occured :pensive:");
             }
         }
-    });
+    }, config.BASE_URL + "/cas");
 })
 
 module.exports = app;
