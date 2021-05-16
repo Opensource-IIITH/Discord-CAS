@@ -1,4 +1,5 @@
 import os
+import asyncio
 
 import discord
 from dotenv import load_dotenv
@@ -19,7 +20,7 @@ mongo_client = MongoClient(
 )
 db = mongo_client.get_database(MONGO_DATABASE)
 
-bot = commands.Bot(command_prefix=";")
+bot = commands.Bot(command_prefix=".")
 
 is_configured = False
 configured_role = None
@@ -32,8 +33,8 @@ async def is_verified(user_id):
 
 
 async def send_link(ctx):
-    LINK_TEXT = "*link*"
-    await ctx.send(f"{LINK_TEXT}\nSign in to CAS and try again.")
+    LINK_TEXT = "https://discord-cas.eastus.cloudapp.azure.com/"
+    await ctx.send(f"<{LINK_TEXT}>\nSign in to CAS and try again.")
 
 
 async def assign_role(ctx, user):
@@ -57,13 +58,21 @@ async def assign_role(ctx, user):
 
 @bot.command(name="verify")
 async def verify_user(ctx):
-    user_id = ctx.message.author.id
-    verification = await is_verified(user_id)
+    author = ctx.message.author
+    user_id = author.id
 
-    if verification:
-        await assign_role(ctx, ctx.message.author)
-    else:
-        await send_link(ctx)
+    for i in range(2):
+        verification = await is_verified(user_id)
+
+        if verification:
+            await assign_role(ctx, author)
+        elif i == 0:
+            await send_link(ctx)
+            await asyncio.sleep(60)
+        else:
+            await ctx.send(
+                f"Sorry <@{user_id}>, could not auto-detect your verification. Please run `.verify` again."
+            )
 
 
 # Practically, this function is not useful
@@ -90,7 +99,7 @@ async def configure_error(ctx, error):
     if isinstance(error, commands.MissingPermissions):
         await ctx.send("You must be an admin to configure roles")
     elif isinstance(error, commands.MissingRequiredArgument) or isinstance(
-            error, commands.RoleNotFound
+        error, commands.RoleNotFound
     ):
         await ctx.send("Please specify a role.")
 

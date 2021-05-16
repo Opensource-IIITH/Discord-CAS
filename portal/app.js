@@ -118,7 +118,8 @@ app.get('/cas', async (req, res) => {
             });
 
             if (user) {
-                res.send("Success! :smile:");
+                res.send("Success! :smile: You can now wait for the bot to auto-detect your verification, " +
+                    "or run `.verify` once again.");
             } else {
                 res.send("Some error occured :pensive:");
             }
