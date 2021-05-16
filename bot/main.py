@@ -66,6 +66,7 @@ async def verify_user(ctx):
 
         if verification:
             await assign_role(ctx, author)
+            break
         elif i == 0:
             await send_link(ctx)
             await asyncio.sleep(60)
