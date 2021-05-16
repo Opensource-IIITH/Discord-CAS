@@ -34,7 +34,7 @@ async def is_verified(user_id):
 
 async def send_link(ctx):
     LINK_TEXT = "https://discord-cas.eastus.cloudapp.azure.com/"
-    await ctx.send(f"<{LINK_TEXT}>\nSign in to CAS and try again.")
+    await ctx.send(f"<{LINK_TEXT}>\nSign in through our portal, and try again.")
 
 
 async def assign_role(ctx, user):
