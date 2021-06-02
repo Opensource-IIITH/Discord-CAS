@@ -50,7 +50,7 @@ def is_verified(user_id):
     return True if get_realname_from_discordid(user_id) else False  # empty lists are false
 
 
-async def get_realname_from_discordid(user_id):
+def get_realname_from_discordid(user_id):
     users = get_users_from_discordid(user_id)
     assert users
     return users[0]["name"]
@@ -96,7 +96,7 @@ async def set_nickname(ctx, user, server_config):
         return
 
     realname = get_realname_from_discordid(user.id)
-    user.edit(nick=realname)
+    await user.edit(nick=realname)
 
 
 async def post_verification(ctx, user):
