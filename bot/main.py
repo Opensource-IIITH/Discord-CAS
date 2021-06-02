@@ -47,7 +47,7 @@ def get_users_from_discordid(user_id):
 
 
 def is_verified(user_id):
-    return True if get_realname_from_discordid(user_id) else False  # empty lists are false
+    return True if get_users_from_discordid(user_id) else False
 
 
 def get_realname_from_discordid(user_id):
