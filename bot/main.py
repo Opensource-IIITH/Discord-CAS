@@ -98,12 +98,12 @@ async def set_nickname(ctx, user, server_config):
     user.edit(nick=realname)
 
 
-def post_verification(ctx, user):
+async def post_verification(ctx, user):
     server_id = ctx.guild.id
     server_config = get_config(server_id)
 
-    assign_role(ctx, user, server_config)
-    set_nickname(ctx, user, server_config)
+    await assign_role(ctx, user, server_config)
+    await set_nickname(ctx, user, server_config)
 
     await ctx.send(f"<@{user.id}> has been CAS-verified!")
 
