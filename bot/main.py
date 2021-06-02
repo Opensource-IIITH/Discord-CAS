@@ -67,7 +67,8 @@ def get_config(server_id: str):
         if section_obj["serverid"] == server_id:
             return section_obj
 
-    return {}
+    print(f"Server id {server_id} not found in server config")
+    exit(1)
 
 
 async def create_roles_if_missing(guild, req_guild_roles):
@@ -99,7 +100,7 @@ async def set_nickname(ctx, user, server_config):
 
 
 async def post_verification(ctx, user):
-    server_id = ctx.guild.id
+    server_id = str(ctx.guild.id)
     server_config = get_config(server_id)
 
     await assign_role(ctx, user, server_config)
