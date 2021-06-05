@@ -110,10 +110,20 @@ app.get('/cas', async (req, res) => {
                 res.send("Status false?", 500);
             }
 
+            let rollno;
+            try {
+                rollno =  extended.attributes.rollno[0];
+            } catch (e) {
+                rollno = "not-existent";
+                logger.info("User roll number does not exist");
+            }
+
+            let name = extended.attributes.name[0];
+            name = name.split(" ").map(val => val[0].toUpperCase() + val.substring(1)).join(" ");
+
             const user = await User.findOrCreate({"discordId": req.session.discordId}, {
                 "discordId": req.session.discordId,
-                "name": extended.attributes.name[0],
-                "rollno": extended.attributes.rollno[0],
+                name, rollno,
                 "email": extended.attributes['e-mail'][0],
             });
 

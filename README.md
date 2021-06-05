@@ -19,8 +19,11 @@ The following configuration are possible through `bot/server_config.ini`:
 ### IIIT clubs
 
 1. Make a pull request to the server by ediing the `bot/server_config.ini` file as per your server requirements. (configurations are detailed in above section)
-2. Contact sigma_g#5744 on Discord.
-   
+2. Create a new role for the bot, which is *above* the roles of regular members (bot can only verify members lower in role than itself)
+3. Contact sigma_g#5744 on Discord.
+
+(If you're new to Discord roles, read the FAQ: [link](https://support.discord.com/hc/en-us/articles/214836687-Role-Management-101))   
+
 I (sigma_g) will then:
 
 1. Merge your pull request 
