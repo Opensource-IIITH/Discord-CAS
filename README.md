@@ -2,7 +2,7 @@
 
 Tool for user verification via CAS on Discord server. If your organization uses CAS for authentication, and if you also run a Discord server whose private contents should only be accessible to CAS authenticated users, then this is the right tool for you.
 
-Another advantage of this tool is when you run multiple private Discord servers. Once the users are authenticated on any one server, they will not need to repeat the whole signup process on another server.
+Once a user are authenticated on any one server, they will not need to repeat the whole signup process on another server.
 
 ## Configuration parameters
 
@@ -20,16 +20,21 @@ The following configuration are possible through `bot/server_config.ini`:
 
 1. Make a pull request to the server by ediing the `bot/server_config.ini` file as per your server requirements. (configurations are detailed in above section)
 2. Create a new role for the bot, which is *above* the roles of regular members (bot can only verify members lower in role than itself)
-3. Contact sigma_g#5744 on Discord.
+3. **After** your PR is merged, navigate to the [this URL](https://discord.com/api/oauth2/authorize?client_id=843107899944861706&permissions=469764096&redirect_uri=https%3A%2F%2Fdiscord-cas.eastus.cloudapp.azure.com%2Fbot&response_type=code&scope=bot%20identify) to authenticate the bot and add it to your server. Note that you must have "Manage Server" permission on this server.
 
-(If you're new to Discord roles, read the FAQ: [link](https://support.discord.com/hc/en-us/articles/214836687-Role-Management-101))   
+(If you're new to Discord roles, read the FAQ: [link](https://support.discord.com/hc/en-us/articles/214836687-Role-Management-101))
 
-I (sigma_g) will then:
+One of the admins will then:
 
-1. Merge your pull request 
-2. Restart the running bot instance 
-3. Give you necessary links so you can add the bot to your server.
-4. (optional) Stay in your server for some time to verify things work.
+1. Merge your pull request
+2. Restart the running bot instance
+
+**Notes**:
+
+1. `.verify` might not work for server-admins. In that case, the role the bot has should be higher than the role of the server admin.
+2. We recommend that you create a new channel (like #server-help) where all your users can run the `.verify` command. 
+
+If at any point you face any difficulty, raise a new issue in this GitHub repository.
 
 ### External organizations
 
