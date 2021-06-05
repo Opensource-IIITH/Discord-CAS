@@ -107,7 +107,13 @@ async def post_verification(ctx, user):
     server_config = get_config(server_id)
 
     await assign_role(ctx.guild, user, server_config)
-    await set_nickname(user, server_config)
+
+    try:
+        await set_nickname(user, server_config)
+    except:
+        await ctx.send(
+            "Bot should have a role higher than you to change your nickname"
+        )
 
     await ctx.send(f"<@{user.id}> has been CAS-verified!")
 
