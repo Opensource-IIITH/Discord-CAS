@@ -26,6 +26,7 @@ def read_and_validate_config():
 
     for section in SERVER_CONFIG.sections():
         section_obj = SERVER_CONFIG[section]
+        print(f"Validating {section}")
 
         for key in req_keys:
             if isinstance(key, tuple):
@@ -41,6 +42,8 @@ def read_and_validate_config():
                 print(f"Missing key: {key}")
                 exit(1)
 
+        print(f"{section} is valid!")
+
 
 def get_users_from_discordid(user_id):
     users = list(db.users.find({"discordId": str(user_id)}))
@@ -48,10 +51,10 @@ def get_users_from_discordid(user_id):
 
 
 def is_verified(user_id):
-    return True if get_realname_from_discordid(user_id) else False  # empty lists are false
+    return True if get_users_from_discordid(user_id) else False
 
 
-async def get_realname_from_discordid(user_id):
+def get_realname_from_discordid(user_id):
     users = get_users_from_discordid(user_id)
     assert users
     return users[0]["name"]
@@ -67,7 +70,8 @@ def get_config(server_id: str):
         if section_obj["serverid"] == server_id:
             return section_obj
 
-    return {}
+    print(f"Server id {server_id} not found in server config")
+    exit(1)
 
 
 async def create_roles_if_missing(guild, req_guild_roles):
@@ -79,31 +83,31 @@ async def create_roles_if_missing(guild, req_guild_roles):
             await guild.create_role(name=role)
 
 
-async def assign_role(ctx, user, server_config):
-    req_roles = server_config["grantroles"]
+async def assign_role(guild, user, server_config):
+    req_roles = server_config["grantroles"].strip().split(",")
 
-    await create_roles_if_missing(ctx.guild, req_roles)
+    await create_roles_if_missing(guild, req_roles)
 
-    assign_roles = [role for role in ctx.guild.roles if role.name in req_roles]
+    assign_roles = [role for role in guild.roles if role.name in req_roles]
 
     for role in assign_roles:
         await user.add_roles(role)
 
 
-async def set_nickname(ctx, user, server_config):
+async def set_nickname(user, server_config):
     if server_config["setrealname"] == "no":
         return
 
     realname = get_realname_from_discordid(user.id)
-    user.edit(nick=realname)
+    await user.edit(nick=realname)
 
 
-def post_verification(ctx, user):
-    server_id = ctx.guild.id
+async def post_verification(ctx, user):
+    server_id = str(ctx.guild.id)
     server_config = get_config(server_id)
 
-    assign_role(ctx, user, server_config)
-    set_nickname(ctx, user, server_config)
+    await assign_role(ctx.guild, user, server_config)
+    await set_nickname(user, server_config)
 
     await ctx.send(f"<@{user.id}> has been CAS-verified!")
 

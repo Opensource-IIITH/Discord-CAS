@@ -1,7 +1,0 @@
-Hi there! Are you a club admin? Are you concerned about non-IIITians entering your Discord server? Today, I want to present to you a great new tool that will help you manage verification in your Discord server seamlessly. We've been running it on Programming Club for almost a month already, with great results. We also did a second test run on Theory Group Discord, and now we'd like to open it for IIIT clubs.
-
-Authenticating a user is now as simple as asking them to run `.verify` in a Discord channel. Once a user is authenticated, the bot can auto-grant them specific roles, and set their nickname, as per your configuration.
-
-The steps to get your Discord server this bot are detailed on its official GitHub page: https://github.com/Groverkss/Discord-CAS. If you face any issues, please raise a GitHub issue and one of us will handle it.
-
-I'd like to thank the following:
