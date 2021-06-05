@@ -116,4 +116,4 @@ dist
 .pnp.*
 
 # Secret config
-*config.js
+config.js

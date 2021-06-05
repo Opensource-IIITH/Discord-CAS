@@ -11,6 +11,7 @@ load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 MONGO_DATABASE = os.getenv("MONGO_DATABASE")
 MONGO_PORT = os.getenv("MONGO_PORT")
+PORTAL_LINK = os.getenv("PORTAL_LINK")
 SERVER_CONFIG = ConfigParser()
 
 bot = commands.Bot(command_prefix=".")
@@ -57,8 +58,7 @@ async def get_realname_from_discordid(user_id):
 
 
 async def send_link(ctx):
-    server_link = "https://discord-cas.eastus.cloudapp.azure.com/"
-    await ctx.send(f"<{server_link}>\nSign in through our portal, and try again.")
+    await ctx.send(f"<{PORTAL_LINK}>\nSign in through our portal, and try again.")
 
 
 def get_config(server_id: str):

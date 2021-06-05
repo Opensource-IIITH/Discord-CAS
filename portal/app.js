@@ -90,7 +90,7 @@ app.get('/discord/callback', async (req, res) => {
 const CAS = require('cas')
 
 const cas = new CAS({
-    base_url: 'https://login.iiit.ac.in/cas',
+    base_url: config.CAS_LINK,
     service: config.BASE_URL,
     version: 2.0,
 })
