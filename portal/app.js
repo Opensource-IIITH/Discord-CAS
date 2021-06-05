@@ -42,20 +42,13 @@ app.get('/discord', (req, res) => {
     res.redirect(`https://discordapp.com/api/oauth2/authorize?client_id=${config.DISCORD_CLIENT_ID}&scope=identify&response_type=code&redirect_uri=${config.DISCORD_REDIRECT}`);
 })
 
-app.get('/discord/callback', async (req, res) => {
-    /* Get user from discord */
-    if (!req.query.code) {
-        res.send("You are not discord :angry:", 400);
-        return;
-    }
-
-    const code = req.query.code;
+async function makeQuery(code, redirect_uri) {
     const creds = btoa(`${config.DISCORD_CLIENT_ID}:${config.DISCORD_SECRET}`);
 
     const data = {
         grant_type: "authorization_code",
         code: code,
-        redirect_uri: config.DISCORD_REDIRECT,
+        redirect_uri,
     };
 
     const _encode = obj => {
@@ -68,7 +61,7 @@ app.get('/discord/callback', async (req, res) => {
         return string.substring(1);
     }
 
-    params = _encode(data);
+    const params = _encode(data);
 
     const response = await fetch(`https://discordapp.com/api/oauth2/token`, {
         method: "POST",
@@ -78,7 +71,20 @@ app.get('/discord/callback', async (req, res) => {
         },
         body: params,
     });
-    const responseJson = await response.json();
+
+    return await response.json();
+}
+
+app.get('/discord/callback', async (req, res) => {
+    /* Get user from discord */
+    if (!req.query.code) {
+        res.send("You are not discord :angry:", 400);
+        return;
+    }
+
+    const code = req.query.code;
+    const redirect_uri = config.DISCORD_REDIRECT;
+    const responseJson = await makeQuery(code, redirect_uri);
     const accessToken = responseJson.access_token;
 
     const userResponse = await fetch(`https://discordapp.com/api/users/@me`, {
@@ -164,36 +170,8 @@ app.get('/bot', async (req, res) => {
   }
 
   const code = req.query.code;
-  const creds = btoa(`${config.DISCORD_CLIENT_ID}:${config.DISCORD_SECRET}`);
-
-  const data = {
-      grant_type: "authorization_code",
-      code: code,
-      redirect_uri: config.BASE_URL + '/bot',
-  };
-
-  const _encode = obj => {
-      let string = "";
-
-      for (const [key, value] of Object.entries(obj)) {
-          if (!value) continue;
-          string += `&${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
-      }
-      return string.substring(1);
-  }
-
-  params = _encode(data);
-
-  const response = await fetch(`https://discordapp.com/api/oauth2/token`, {
-      method: "POST",
-      headers: {
-          Authorization: `Basic ${creds}`,
-          'Content-Type': "application/x-www-form-urlencoded",
-      },
-      body: params,
-  });
-
-  const responseJson = await response.json();
+  let redirect_uri = config.BASE_URL + '/bot';
+  const responseJson = await makeQuery(code, redirect_uri);
 
   if (responseJson && responseJson.access_token) {
     res.send("Added successfully!");     
