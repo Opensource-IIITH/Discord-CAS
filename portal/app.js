@@ -10,6 +10,18 @@ const logger = require('./utils/logger');
 
 const User = require('./models/User')
 
+const parser = require('./utils/parser')
+
+let server_ids = [];
+
+parser.parseFile('../bot/server_config.ini', (error, data) => {
+  if (error) {
+    logger.error(error);
+    return;
+  }
+  server_ids = Object.values(data).map(x => x.serverid);
+})
+
 const app = express();
 
 app.use(express.json());
@@ -125,6 +137,60 @@ app.get('/cas', async (req, res) => {
             }
         }
     }, config.BASE_URL + "/cas");
+})
+
+app.get('/bot', async (req, res) => {
+  if (!req.query.code || !req.query.guild_id) {
+      res.send("You are not discord :angry:", 400);
+      return;
+  }
+
+  const guild_id = req.query.guild_id;
+
+  if (!server_ids.includes(guild_id)) {
+    res.send("Read the instructions to invite the bot here here: " + 
+        "https://github.com/Groverkss/Discord-CAS/blob/master/README.md", 400);
+    return;
+  }
+
+  const code = req.query.code;
+  const creds = btoa(`${config.DISCORD_CLIENT_ID}:${config.DISCORD_SECRET}`);
+
+  const data = {
+      grant_type: "authorization_code",
+      code: code,
+      redirect_uri: config.BASE_URL + '/bot',
+  };
+
+  const _encode = obj => {
+      let string = "";
+
+      for (const [key, value] of Object.entries(obj)) {
+          if (!value) continue;
+          string += `&${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+      }
+      return string.substring(1);
+  }
+
+  params = _encode(data);
+
+  const response = await fetch(`https://discordapp.com/api/oauth2/token`, {
+      method: "POST",
+      headers: {
+          Authorization: `Basic ${creds}`,
+          'Content-Type': "application/x-www-form-urlencoded",
+      },
+      body: params,
+  });
+
+  const responseJson = await response.json();
+
+  if (responseJson && responseJson.access_token) {
+    res.send("Added successfully!");     
+  } else {
+    logger.error(responseJson);
+    res.send("Unkown error occured");
+  }
 })
 
 module.exports = app;
