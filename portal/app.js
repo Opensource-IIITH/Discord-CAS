@@ -19,7 +19,9 @@ parser.parseFile('../bot/server_config.ini', (error, data) => {
     logger.error(error);
     return;
   }
-  server_ids = Object.values(data).map(x => x.serverid);
+
+  // the default section does not have serverid
+  server_ids = Object.values(data).filter(val => val.hasOwnProperty("serverid")).map(x => x.serverid);
 })
 
 const app = express();

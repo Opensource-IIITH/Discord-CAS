@@ -22,27 +22,17 @@ def read_and_validate_config():
     global SERVER_CONFIG
     SERVER_CONFIG.read('server_config.ini')
 
-    req_keys = [("setrealname", ("yes", "no")), "grantroles", "serverid"]
+    req_keys = ["grantroles", "serverid"]
 
     for section in SERVER_CONFIG.sections():
         section_obj = SERVER_CONFIG[section]
-        print(f"Validating {section}")
 
         for key in req_keys:
-            if isinstance(key, tuple):
-                key_name, allowed_values = key
-                if key_name not in section_obj:
-                    print(f"Missing key: {key_name}")
-                    exit(1)
-                given_value = section_obj[key_name]
-                if given_value not in allowed_values:
-                    print(f"Invalid value for key: {key_name}; expected: {allowed_values}; given: {given_value}")
-                    exit(1)
-            elif key not in section_obj:
-                print(f"Missing key: {key}")
+            if key not in section_obj:
+                print(f"Missing key: {key} in section {section}")
                 exit(1)
 
-        print(f"{section} is valid!")
+        print(f"{section} config is valid!")
 
 
 def get_users_from_discordid(user_id):
@@ -90,8 +80,15 @@ async def assign_role(guild, user, server_config):
 
     assign_roles = [role for role in guild.roles if role.name in req_roles]
 
-    for role in assign_roles:
-        await user.add_roles(role)
+    await user.add_roles(*assign_roles)
+
+
+async def delete_role(guild, user, server_config):
+    config_remove_roles = server_config["deleteroles"].strip().split(",")
+    to_remove_roles = [role for role in guild.roles if role.name in config_remove_roles]
+
+    # if the user does not have that role, this does not crash
+    await user.remove_roles(*to_remove_roles)
 
 
 async def set_nickname(user, server_config):
@@ -107,6 +104,7 @@ async def post_verification(ctx, user):
     server_config = get_config(server_id)
 
     await assign_role(ctx.guild, user, server_config)
+    await delete_role(ctx.guild, user, server_config)
 
     try:
         await set_nickname(user, server_config)
