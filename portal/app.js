@@ -167,7 +167,7 @@ app.get('/bot', async (req, res) => {
 
   if (!server_ids.includes(guild_id)) {
     res.send("Read the instructions to invite the bot here here: " + 
-        "https://github.com/Groverkss/Discord-CAS/blob/master/README.md", 400);
+        "https://github.com/Groverkss/Discord-CAS/wiki/Adding-Bot-to-a-IIIT-Club-Server", 400);
     return;
   }
 
