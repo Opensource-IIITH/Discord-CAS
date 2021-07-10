@@ -23,9 +23,13 @@ Formating for javascript isnt strict as long as 80 character limit is followed.
 ## Privacy policy
 
 When a user authenticates with our web portal, we store their following
-information: 1. Full Name 2. Email 3. Roll number 4. DiscordID. 1,2,3 are
-obtained from CAS, and 4 is obtained from Discord. All these are obtained after
-user gives consent through authentication. 
+information: 
+  1. Full Name 
+  1. Email 
+  1. Roll number 
+  1. DiscordID.
+
+1,2,3 are obtained from CAS, and 4 is obtained from Discord OAuth. 
 
 This data is used strictly for authentication only, and not visible publicly.
 It is only visible to the server host.

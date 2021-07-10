@@ -20,7 +20,7 @@ db: database.Database = None  # assigned in main function
 
 def read_and_validate_config():
     global SERVER_CONFIG
-    SERVER_CONFIG.read('server_config.ini')
+    SERVER_CONFIG.read("server_config.ini")
 
     req_keys = ["grantroles", "serverid"]
 
@@ -51,7 +51,9 @@ def get_realname_from_discordid(user_id):
 
 
 async def send_link(ctx):
-    await ctx.send(f"<{PORTAL_LINK}>\nSign in through our portal, and try again.")
+    await ctx.send(
+        f"<{PORTAL_LINK}>\nSign in through our portal, and try again."
+    )
 
 
 def get_config(server_id: str):
@@ -85,7 +87,9 @@ async def assign_role(guild, user, server_config):
 
 async def delete_role(guild, user, server_config):
     config_remove_roles = server_config["deleteroles"].strip().split(",")
-    to_remove_roles = [role for role in guild.roles if role.name in config_remove_roles]
+    to_remove_roles = [
+        role for role in guild.roles if role.name in config_remove_roles
+    ]
 
     # if the user does not have that role, this does not crash
     await user.remove_roles(*to_remove_roles)
