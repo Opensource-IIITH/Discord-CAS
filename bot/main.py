@@ -7,6 +7,8 @@ from discord.ext import commands
 
 from pymongo import MongoClient, database
 
+from .config_verification import read_and_validate_config
+
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 MONGO_DATABASE = os.getenv("MONGO_DATABASE")
@@ -16,23 +18,6 @@ SERVER_CONFIG = ConfigParser()
 
 bot = commands.Bot(command_prefix=".")
 db: database.Database = None  # assigned in main function
-
-
-def read_and_validate_config():
-    global SERVER_CONFIG
-    SERVER_CONFIG.read("server_config.ini")
-
-    req_keys = ["grantroles", "serverid"]
-
-    for section in SERVER_CONFIG.sections():
-        section_obj = SERVER_CONFIG[section]
-
-        for key in req_keys:
-            if key not in section_obj:
-                print(f"Missing key: {key} in section {section}")
-                exit(1)
-
-        print(f"{section} config is valid!")
 
 
 def get_users_from_discordid(user_id):
@@ -148,7 +133,9 @@ async def on_ready():
 def main():
     global db
 
-    read_and_validate_config()
+    if not read_and_validate_config(SERVER_CONFIG, "server_config.ini"):
+        exit(1)
+
     mongo_client = MongoClient(
         f"mongodb://127.0.0.1:{MONGO_PORT}/{MONGO_DATABASE}?retryWrites=true&w=majority"
     )
