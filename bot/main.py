@@ -139,11 +139,11 @@ async def query(
 ):
     user = db.users.find_one({"discordId": identifier.id})
     if user:
-        ctx.reply(
+        await ctx.reply(
             f"Name: {user['name']}\nEmail: {user['email']}\nRoll Number: {user['rollno']}"
         )
     else:
-        ctx.reply(f"{identifier} is not registered with IIIT-CAS.")
+        await ctx.reply(f"{identifier} is not registered with IIIT-CAS.")
 
 
 @query.error
