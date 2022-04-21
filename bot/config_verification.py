@@ -18,5 +18,5 @@ def read_and_validate_config(SERVER_CONFIG, config_file_path):
     return True
 
 if __name__ == "__main__":
-    if not read_and_validate_config(ConfigParser(), "server_config.ini"):
+    if not read_and_validate_config(ConfigParser(), "bot/server_config.ini"):
         exit(1)

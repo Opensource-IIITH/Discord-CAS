@@ -22,4 +22,3 @@ jobs:
     - name: Run file and test
       run: |
         python ./bot/config_verification.py
-        echo $?
