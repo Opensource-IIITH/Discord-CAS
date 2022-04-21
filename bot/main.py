@@ -147,7 +147,28 @@ async def query(
 
 
 @query.error
-async def verify_error(ctx, error):
+async def query_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await ctx.reply("This server is not for academic purposes.")
+
+
+@bot.command(name="roll")
+@commands.check(is_academic)
+async def roll(
+    ctx: commands.Context,
+    identifier: int,
+):
+    user = db.users.find_one({"rollno": str(identifier)})
+    if user:
+        await ctx.reply(
+            f"Name: {user['name']}\nEmail: {user['email']}\nRoll Number: {user['rollno']}"
+        )
+    else:
+        await ctx.reply(f"{identifier} is not registered with IIIT-CAS.")
+
+
+@roll.error
+async def roll_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
         await ctx.reply("This server is not for academic purposes.")
 
