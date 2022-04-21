@@ -1,8 +1,10 @@
 import asyncio
 from configparser import ConfigParser
+import typing
 from dotenv import load_dotenv
 import os
 
+import discord
 from discord.ext import commands
 
 from pymongo import MongoClient, database
@@ -123,6 +125,25 @@ async def verify_user(ctx):
             await ctx.send(
                 f"Sorry <@{user_id}>, could not auto-detect your verification. Please run `.verify` again."
             )
+
+
+def is_academic(ctx: commands.Context):
+    return get_config(str(ctx.guild.id)).get("is_academic", False)
+
+
+@bot.command(name="query")
+@commands.check(is_academic)
+async def query(
+    ctx: commands.Context,
+    identifier: discord.User,
+):
+    user = db.users.find_one({"discordId": identifier.id})
+    if user:
+        ctx.reply(
+            f"Name: {user['name']}\nEmail: {user['email']}\nRoll Number: {user['rollno']}"
+        )
+    else:
+        ctx.reply(f"{identifier} is not registered with IIIT-CAS.")
 
 
 @bot.event
