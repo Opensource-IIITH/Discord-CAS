@@ -137,7 +137,7 @@ async def query(
     ctx: commands.Context,
     identifier: discord.User,
 ):
-    user = db.users.find_one({"discordId": identifier.id})
+    user = db.users.find_one({"discordId": str(identifier.id)})
     if user:
         await ctx.reply(
             f"Name: {user['name']}\nEmail: {user['email']}\nRoll Number: {user['rollno']}"
