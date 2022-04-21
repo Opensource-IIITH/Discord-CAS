@@ -78,7 +78,7 @@ async def delete_role(guild, user, server_config):
         role for role in guild.roles if role.name in config_remove_roles
     ]
 
-#if the user does not have that role, this does not crash
+    # if the user does not have that role, this does not crash
     await user.remove_roles(*to_remove_roles)
 
 
@@ -128,10 +128,7 @@ async def verify_user(ctx):
 
 
 def is_academic(ctx: commands.Context):
-    academic =  get_config(str(ctx.guild.id)).get("is_academic", False)
-    if not academic:
-        ctx.reply("This server does not support querying.")
-    return academic
+    return get_config(str(ctx.guild.id)).get("is_academic", False)
 
 
 @bot.command(name="query")
