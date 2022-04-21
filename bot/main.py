@@ -146,6 +146,12 @@ async def query(
         ctx.reply(f"{identifier} is not registered with IIIT-CAS.")
 
 
+@query.error
+async def verify_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await ctx.reply("This server is not for academic purposes.")
+
+
 @bot.event
 async def on_ready():
     print(f"{bot.user.name} has connected to Discord!")
