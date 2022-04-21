@@ -7,7 +7,7 @@ from discord.ext import commands
 
 from pymongo import MongoClient, database
 
-from .config_verification import read_and_validate_config
+from config_verification import read_and_validate_config
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
