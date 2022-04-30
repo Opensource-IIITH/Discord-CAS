@@ -1,18 +1,22 @@
 from configparser import ConfigParser
 
-def read_and_validate_config(SERVER_CONFIG, config_file_path):
+def read_and_validate_config(SERVER_CONFIG: ConfigParser, config_file_path):
     SERVER_CONFIG.read(config_file_path)
-
-    req_keys = ["grantroles", "serverid"]
 
     for section in SERVER_CONFIG.sections():
         section_obj = SERVER_CONFIG[section]
+        req_keys = {"grantroles", "serverid"}
+        all_keys = req_keys | {"deleteroles", "is_academic", "setrealname"} #Add optional keys here
 
-        for key in req_keys:
-            if key not in section_obj:
-                print(f"Missing key: {key} in section {section}")
+        for key in section_obj.keys():
+            if key not in all_keys:
+                print(f"Unknown key: {key} in section {section}")
                 return False
-
+            req_keys.discard(key)
+        if len(req_keys)!= 0:
+            print(f"Missing keys: {' ,'.join(req_keys)} in section {section}")
+            return False
+            
         print(f"{section} config is valid!")
 
     return True
