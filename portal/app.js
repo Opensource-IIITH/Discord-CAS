@@ -37,7 +37,7 @@ app.get('/test', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.redirect('/discord');
+    res.redirect('discord');
 });
 
 app.get('/discord', (req, res) => {
@@ -104,7 +104,7 @@ app.get('/discord/callback', async (req, res) => {
 
     req.session.discordId = user.id;
 
-    res.redirect('/cas');
+    res.redirect('../cas');
 })
 
 const CAS = require('cas')
