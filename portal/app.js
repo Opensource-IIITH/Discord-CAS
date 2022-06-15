@@ -51,6 +51,10 @@ app.post('/webhooks/update', async (req, res) => {
 		res.send("Ok. Not needed though.")
 		return;
 	}
+	if (req.body['ref'] !== 'refs/heads/master'){
+		res.send("Thanks. But I only care about master.")
+		return;
+	}
 	const signature = req.get('X-Hub-Signature-256');
 	if (!compare_signature(config.GITHUB_SECRET, signature, req.rawBody)){
 		logger.info("Invalid signature");
