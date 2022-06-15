@@ -1,2 +1,4 @@
 /bot/.env
+/bot/.venv/
 /portal/utils/config.js
+/portal/node_modules/
