@@ -1,7 +1,7 @@
 from configparser import ConfigParser
 
 def read_and_validate_config(SERVER_CONFIG: ConfigParser, config_file_path):
-    SERVER_CONFIG.read(config_file_path)
+    SERVER_CONFIG.read(config_file_path, encoding='utf-8')
 
     for section in SERVER_CONFIG.sections():
         section_obj = SERVER_CONFIG[section]
