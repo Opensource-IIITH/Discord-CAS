@@ -8,9 +8,11 @@ const btoa = require('btoa');
 const config = require('./utils/config');
 const logger = require('./utils/logger');
 
-const User = require('./models/User')
+const User = require('./models/User');
 
-const parser = require('./utils/parser')
+const parser = require('./utils/parser');
+
+const {compare_signature, pull_and_restart} = require('./utils/updater');
 
 let server_ids = [];
 
@@ -26,7 +28,13 @@ parser.parseFile('../bot/server_config.ini', (error, data) => {
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({
+	 verify: (req, res, buf, encoding) => {
+		if (buf && buf.length) {
+			req.rawBody = buf.toString(encoding || 'utf8');
+		}
+	},
+}));
 app.use(morgan('dev'));
 app.use(session({
     secret: config.SECRET, store: MongoStore.create({mongoUrl: config.ATLAS_URL})
@@ -34,6 +42,23 @@ app.use(session({
 
 app.get('/test', (req, res) => {
     res.send("Hello World!");
+});
+
+app.post('/webhooks/update', async (req, res) => {
+	const event_type = req.get('X-GitHub-Event');
+	logger.info(`Received ${event_type} GitHub event`);
+	if (event_type !== 'push'){
+		res.send("Ok. Not needed though.")
+		return;
+	}
+	const signature = req.get('X-Hub-Signature-256');
+	if (!compare_signature(config.GITHUB_SECRET, signature, req.rawBody)){
+		logger.info("Invalid signature");
+		res.send(403, "You're not github. Impostor.");
+		return;
+	}
+	res.send("Thanks.");
+	pull_and_restart();
 });
 
 app.get('/', (req, res) => {
