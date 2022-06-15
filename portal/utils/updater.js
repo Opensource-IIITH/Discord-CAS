@@ -1,17 +1,16 @@
 const { exec } = require("child_process");
-
-const {createHmac, timingSafeEqual} = require("node:crypto");
+const {createHmac, timingSafeEqual} = require("crypto");
 
 const logger = require("./logger")
 
-function compare_signature(secret, signature, payload){
+const compare_signature = (secret, signature, payload) => {
 	const hmac = createHmac('sha256', secret=secret)
 	hmac.update(payload);
 	const new_signature = `sha256=${hmac.digest('hex')}`;
 	return (timingSafeEqual(Buffer.from(signature), Buffer.from(new_signature)));
 }
 
-function pull_and_restart(){
+const pull_and_restart = () => {
 	logger.info("Git Pulling...");
 	exec("git pull", (error, stdout, stderr)=>{
 		if(error){
