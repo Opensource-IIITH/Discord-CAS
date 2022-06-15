@@ -8,6 +8,9 @@ const DISCORD_CLIENT_ID = "";
 const DISCORD_SECRET = "";
 const DISCORD_REDIRECT = BASE_URL + "/discord/callback";
 
+// GitHub Webhook Secret Token
+const GITHUB_SECRET = "";
+
 // secret for express middleware
 const SECRET = "";
 
@@ -23,4 +26,5 @@ module.exports = {
   DISCORD_CLIENT_ID,
   DISCORD_SECRET,
   DISCORD_REDIRECT,
+  GITHUB_SECRET
 }
