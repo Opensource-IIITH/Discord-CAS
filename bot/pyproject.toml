@@ -1,0 +1,15 @@
+
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "Shamil K", email = "noteness@riseup.net"},
+]
+dependencies = [
+    "py-cord>=2.4.1",
+    "pymongo>=4.4.1",
+    "python-dotenv>=1.0.0",
+]
+requires-python = ">=3.11"
+license = {text = "MIT"}
