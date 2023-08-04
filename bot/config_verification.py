@@ -6,7 +6,7 @@ def read_and_validate_config(SERVER_CONFIG: ConfigParser, config_file_path):
     for section in SERVER_CONFIG.sections():
         section_obj = SERVER_CONFIG[section]
         req_keys = {"grantroles", "serverid"}
-        all_keys = req_keys | {"deleteroles", "is_academic", "setrealname"} #Add optional keys here
+        all_keys = req_keys | {"deleteroles", "is_academic", "setrealname", "temproles"} #Add optional keys here
 
         for key in section_obj.keys():
             if key not in all_keys:

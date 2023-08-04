@@ -143,7 +143,7 @@ async def query(
             f"Name: {user['name']}\nEmail: {user['email']}\nRoll Number: {user['rollno']}"
         )
     else:
-        await ctx.reply(f"{identifier} is not registered with IIIT-CAS.")
+        await ctx.reply(f"{identifier} is not registered with Discord-CAS.")
 
 
 @query.error
@@ -164,7 +164,7 @@ async def roll(
             f"Name: {user['name']}\nEmail: {user['email']}\nRoll Number: {user['rollno']}"
         )
     else:
-        await ctx.reply(f"{identifier} is not registered with IIIT-CAS.")
+        await ctx.reply(f"{identifier} is not registered with Discord-CAS.")
 
 
 @roll.error
@@ -172,6 +172,9 @@ async def roll_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
         await ctx.reply("This server is not for academic purposes.")
 
+@bot.command("gettemprole")
+async def gettemprole(ctx: commands.Context, role: discord.Role):
+    
 
 @bot.event
 async def on_ready():

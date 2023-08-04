@@ -6,7 +6,7 @@ groups = ["default"]
 cross_platform = true
 static_urls = false
 lock_version = "4.3"
-content_hash = "sha256:1f9d28a7430dd815dec4afaf0c962c575d127b1d50729792138f3590837f5b29"
+content_hash = "sha256:ab8faf8b46ed9f04874f0cccb1732d8d3e10007736811fcd1a70dc443b7887b4"
 
 [[package]]
 name = "aiohttp"
@@ -141,6 +141,19 @@ summary = "Internationalized Domain Names in Applications (IDNA)"
 files = [
     {file = "idna-3.4-py3-none-any.whl", hash = "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"},
     {file = "idna-3.4.tar.gz", hash = "sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4"},
+]
+
+[[package]]
+name = "motor"
+version = "3.2.0"
+requires_python = ">=3.7"
+summary = "Non-blocking MongoDB driver for Tornado or asyncio"
+dependencies = [
+    "pymongo<5,>=4.4",
+]
+files = [
+    {file = "motor-3.2.0-py3-none-any.whl", hash = "sha256:82cd3d8a3b57e322c3fa382a393b52828c9a2e98b315c78af36f01bae78af6a6"},
+    {file = "motor-3.2.0.tar.gz", hash = "sha256:4fb1e8502260f853554f24115421584e83904a6debb577354d33e9711ee99008"},
 ]
 
 [[package]]
